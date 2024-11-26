@@ -79,7 +79,7 @@ memdb::Database::error_interface memdb::Database::execute(std::istream &query)
         {
             if ((tmp = tolow(split(line, " "))) == "table")
             {
-                std::string name = split(line, " "), next = "";
+                name = split(line, " "); std::string next = "";
                 data buffer;
                 bd.insert(std::make_pair(name, buffer));
                 line = pull(line, {"(",")"});
@@ -178,7 +178,7 @@ memdb::Database::error_interface memdb::Database::execute(std::istream &query)
             line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
             line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
             std::replace(tmp.begin(), tmp.end(), '\n', ' ');
-            std::string name = line;
+            name = line;
             data* ref_table = &bd[name];
             for (int i = 0; i < (*ref_table).names.size(); i++)
             {
@@ -308,14 +308,14 @@ std::string memdb::Database::error_interface::get_error()
     return response;
 }
 
-memdb::Database::data::Iterator::Iterator(struct data* in)
+memdb::Database::error_interface::Iterator::Iterator(data* in)
 {
     _data = in;
     int index = -1;
     out = "";
     for (int i = 0; i < _data->length; i++)
     {
-        if (_data->types[i].find("string") != std::string::npos || _data->types[i].find("byter") != std::string::npos)
+        if (_data->types[i].find("string") != std::string::npos || _data->types[i].find("bytes") != std::string::npos)
         {
             out += *((std::string*)_data->def_val[i]) + ";";
         }
